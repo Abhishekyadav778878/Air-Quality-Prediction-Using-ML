@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AQI Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f8ff;
+            color: #222;
+            text-align: center;
+            padding: 50px;
+        }
+        .box {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            padding: 30px;
+            width: 400px;
+            margin: auto;
+        }
+        input, button {
+            padding: 10px;
+            margin-top: 15px;
+            width: 80%;
+            border-radius: 6px;
+            border: 1px solid #aaa;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover { background-color: #45a049; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>🌍 Air Quality Prediction</h2>
+        <form method="POST">
+            <input type="text" name="city_name" placeholder="Enter City Name" required>
+            <button type="submit">Predict AQI</button>
+        </form>
+
+        {% if location_info %}
+            <h3>{{ location_info }}</h3>
+            <p><b>Weather:</b> {{ weather_info.temperature }}°C, {{ weather_info.windspeed }} km/h</p>
+            <p><b>PM2.5:</b> {{ air_info.pm2_5 }}</p>
+            <p><b>PM10:</b> {{ air_info.pm10 }}</p>
+            <p><b>AQI:</b> {{ aqi_info }}</p>
+            <p><b>Industry Suggestion:</b> {{ industry_advice }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>
