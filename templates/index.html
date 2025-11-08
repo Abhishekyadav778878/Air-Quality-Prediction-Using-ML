@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AQI Prediction Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            background: radial-gradient(circle at top left, #001f3f, #000);
+            color: #fff;
+            text-align: center;
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        .box {
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.05);
+            margin: auto;
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        input, button {
+            padding: 12px 15px;
+            margin-top: 10px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            width: 80%;
+            font-size: 1rem;
+        }
+
+        input {
+            background: #111;
+            color: #0ff;
+            border: 2px solid #0ff;
+            box-shadow: 0 0 10px #0ff;
+        }
+
+        button {
+            background: linear-gradient(90deg, #00ffff, #007bff);
+            color: #fff;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 0 15px #00bcd4;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            background: linear-gradient(90deg, #007bff, #00ffff);
+        }
+
+        /* AQI Gauge */
+        .aqi-gauge {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin: 40px auto;
+            background: radial-gradient(circle at center, #001f3f, #000);
+        }
+
+        .circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                #00ff00 0deg,
+                #ffff00 90deg,
+                #ffa500 180deg,
+                #ff0000 270deg,
+                #800080 360deg
+            );
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: rotateGlow 4s linear infinite;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.5);
+        }
+
+        .inside-circle {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: #000;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #00ffff;
+            box-shadow: 0 0 15px #00ffff inset, 0 0 10px #00ffff;
+        }
+
+        .inside-circle h2 {
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
+        .inside-circle p {
+            font-size: 1rem;
+            margin: 5px 0 0;
+        }
+
+        @keyframes rotateGlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Suggestion + Category */
+        .result-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            margin-top: 25px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+        }
+
+        .category {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #00ffff;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .suggestion {
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        footer {
+            margin-top: 40px;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <h1>🌍 Air Quality Prediction Dashboard</h1>
+
+        <form method="POST">
+            <input type="text" name="city_name" placeholder="Enter City Name (e.g. Mumbai)" required>
+            <br>
+            <button type="submit">Predict AQI</button>
+        </form>
+
+        {% if aqi_info %}
+        <div class="aqi-gauge">
+            <div class="circle"></div>
+            <div class="inside-circle">
+                <h2>{{ aqi_info }}</h2>
+                <p>AQI</p>
+            </div>
+        </div>
+
+        <div class="result-box">
+            {% set aqi_value = aqi_info|float %}
+            <div class="category">
+                {% if aqi_value < 50 %}Good 🌿
+                {% elif aqi_value < 100 %}Moderate 🙂
+                {% elif aqi_value < 200 %}Unhealthy 😷
+                {% elif aqi_value < 300 %}Very Unhealthy ☠️
+                {% else %}Hazardous 💀{% endif %}
+            </div>
+
+            <div class="suggestion">
+                {{ industry_advice }}
+            </div>
+
+            <p><b>Weather:</b> {{ weather_info.temperature }}°C, {{ weather_info.windspeed }} km/h</p>
+            <p><b>PM2.5:</b> {{ air_info.pm2_5 }}</p>
+            <p><b>PM10:</b> {{ air_info.pm10 }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <footer>
+        Developed by <b>Abhishek Yadav</b> 🌟 | Data Science & Machine Learning
+    </footer>
+</body>
+</html>
